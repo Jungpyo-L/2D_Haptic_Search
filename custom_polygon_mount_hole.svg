@@ -1,7 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 283.5 283.5">
-  <defs>
-    <style>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   viewBox="0 0 283.5 283.5"
+   id="svg14"
+   sodipodi:docname="custom_polygon_mount_hole.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4">
+    <style
+       id="style2">
       .cls-1, .cls-2 {
         fill: none;
         stroke: red;
@@ -13,14 +24,62 @@
       }
     </style>
   </defs>
-  <g id="svg6" sodipodi:docname="custom_polygon_mount_hole.svg">
-    <sodipodi:namedview id="namedview8" bordercolor="#666666" borderopacity="1.0" inkscape:current-layer="svg6" inkscape:cx="153.18712" inkscape:cy="192.39573" inkscape:deskcolor="#d1d1d1" inkscape:document-units="mm" inkscape:pagecheckerboard="0" inkscape:pageopacity="0.0" inkscape:showpageshadow="2" inkscape:window-height="1009" inkscape:window-maximized="1" inkscape:window-width="1920" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:zoom="2.1933958" pagecolor="#ffffff" showgrid="false"/>
-    <g id="_defs" data-name="&amp;lt;defs">
-      <inkscape:path-effect id="path-effect3354" effect="spiro" is_visible="true" lpeversion="1"/>
-      <inkscape:path-effect id="path-effect3350" effect="spiro" is_visible="true" lpeversion="1"/>
+  <g
+     id="svg6"
+     sodipodi:docname="custom_polygon_mount_hole.svg">
+    <sodipodi:namedview
+       id="namedview8"
+       bordercolor="#666666"
+       borderopacity="1.0"
+       inkscape:current-layer="svg6"
+       inkscape:cx="75.225821"
+       inkscape:cy="162.98928"
+       inkscape:deskcolor="#d1d1d1"
+       inkscape:document-units="mm"
+       inkscape:pagecheckerboard="0"
+       inkscape:pageopacity="0.0"
+       inkscape:showpageshadow="2"
+       inkscape:window-height="1009"
+       inkscape:window-maximized="1"
+       inkscape:window-width="1920"
+       inkscape:window-x="-8"
+       inkscape:window-y="-8"
+       inkscape:zoom="4.3867916"
+       pagecolor="#ffffff"
+       showgrid="false" />
+    <g
+       id="_defs"
+       data-name="&amp;lt;defs">
+      <inkscape:path-effect
+         id="path-effect3354"
+         effect="spiro"
+         is_visible="true"
+         lpeversion="1" />
+      <inkscape:path-effect
+         id="path-effect3350"
+         effect="spiro"
+         is_visible="true"
+         lpeversion="1" />
     </g>
-    <path id="polygon4" class="cls-1" d="M156.3,89.6l-39.1,41.7-18.2-14.1-13.8,8.3,2.8-11.1-8.3,2.8-2.8,8.3-2.8,8.3,8.3,24.9,5.5-11.1,8.3,13.8,22.7-20.4,36.3,50.9,17.6-15.7-48.9-39.7,47.1-28.5-14.8-18.5Z"/>
-    <circle id="path343" class="cls-2" cx="156.3" cy="105.4" r="8.4"/>
-    <circle id="path343-8" class="cls-2" cx="156.3" cy="176.2" r="8.4"/>
+    <path
+       id="polygon4"
+       class="cls-1"
+       d="M 147.49736,85.990892 98.511378,125.30565 88.154045,106.25342 66.91972,99.936088 47.264223,122.79347 l 0.757028,-25.209939 -15.563255,3.948259 -11.015095,16.24663 -4.860256,25.59284 16.475083,34.15059 12.754612,-22.47445 21.034222,29.00091 27.31268,-8.50544 5.658474,-18.33908 57.555034,70.0314 27.68445,-24.6948 -76.9187,-62.44485 73.12019,-25.48535 -14.57584,-26.842309 z"
+       style="stroke-width:0;stroke-dasharray:none"
+       sodipodi:nodetypes="cccccccccccccccccccc" />
+    <circle
+       id="path343"
+       class="cls-2"
+       cx="156.23624"
+       cy="105.93778"
+       style="stroke-width:0;stroke-dasharray:none"
+       r="11.527559" />
+    <circle
+       id="path343-8"
+       class="cls-2"
+       cx="156.23624"
+       cy="200.42599"
+       style="stroke-width:0;stroke-dasharray:none"
+       r="11.527559" />
   </g>
 </svg>

@@ -7,15 +7,19 @@ from shapely.affinity import rotate
 from matplotlib.animation import FuncAnimation
 
 class PolygonObject:
-    def __init__(self, shape, width, height, position=(0, 0), concave_angle=180):
+    def __init__(self, shape, width=None, height=None, position=(0, 0), concave_angle=180, custom_coords=None):
         self.shape = shape
         self.width = width
         self.height = height
         self.position = position
         self.concave_angle = concave_angle
+        self.custom_coords = custom_coords
         self.polygon = self.create_polygon()
 
     def create_polygon(self):
+        if self.custom_coords:
+            return Polygon(self.custom_coords)
+        
         x, y = self.position
         if self.shape == "Rectangle":
             coords = [(x, y), (x + self.width, y), (x + self.width, y + self.height), (x, y + self.height)]
@@ -29,6 +33,7 @@ class PolygonObject:
             coords.insert(4, concave_point)
         else:
             raise ValueError("Unsupported shape")
+
         return Polygon(coords)
     
     def draw(self, ax):
@@ -41,6 +46,7 @@ class SuctionCup:
         self.radius = radius  # in mm
         self.suction_cup_area = np.pi * (self.radius ** 2)
         self.center = np.array(center)
+        self.velocity = np.array([0.0, 0.0])  # Initialize velocity
         self.rotation_angle = rotation_angle
         self.direction_vector = np.array([0, 0])
         self.chambers = self.create_chambers()
@@ -120,15 +126,24 @@ def plot_polygon_and_suction_cup(ax, polygon_obj, suction_cup):
     suction_cup.draw(ax)
     ax.set_aspect('equal')
     ax.axis('off')
-    ax.set_xlim(-15, 15)  # Fix x limits
-    ax.set_ylim(-5, 15)   # Fix y limits
+    # nozzle shape
+    # ax.set_xlim(-15, 15)  # Fix x limits
+    # ax.set_ylim(-5, 15)   # Fix y limits
+    # dumbbell shape
+    ax.set_xlim(-5, 35)  # Fix x limits
+    ax.set_ylim(-5, 20)   # Fix y limits
 
 def animate_suction_cup(i, ax, polygon_obj, suction_cup, step_size, haptic_path):
     if check_suction(polygon_obj, suction_cup):
+        plot_polygon_and_suction_cup(ax, polygon_obj, suction_cup)
         return
     
+    damping_factor = 0.9
     suction_cup.direction_vector = unit_direction_vector(polygon_obj, suction_cup)
-    suction_cup.center = suction_cup.center + step_size * suction_cup.direction_vector
+    # suction_cup.velocity = damping_factor * suction_cup.velocity + step_size * suction_cup.direction_vector
+    # suction_cup.center += suction_cup.velocity
+    suction_cup.center += step_size * suction_cup.direction_vector
+    # suction_cup.rotation_angle += 1
     suction_cup.chambers = suction_cup.create_chambers()
     
     # Update haptic_path
@@ -136,19 +151,28 @@ def animate_suction_cup(i, ax, polygon_obj, suction_cup, step_size, haptic_path)
     
     plot_polygon_and_suction_cup(ax, polygon_obj, suction_cup)
 
-def plot_haptic_path(ax, haptic_paths):
+def plot_haptic_path(ax, polygon_obj, haptic_path, label):
     polygon_obj.draw(ax)
-    colors = ['r', 'g', 'b']
-    labels = ['3 Chambers', '4 Chambers', '6 Chambers']
+    ax.plot(haptic_path[:, 0], haptic_path[:, 1], 'r-', linewidth=2, label=label)
     
-    for haptic_path, color, label in zip(haptic_paths, colors, labels):
-        haptic_path = np.array(haptic_path)
-        ax.plot(haptic_path[:, 0], haptic_path[:, 1], color=color, linewidth=2, label=label)
-    
+    # Set the aspect, limits, and axis off
     ax.set_aspect('equal')
     ax.axis('off')
-    ax.set_xlim(-15, 15)
-    ax.set_ylim(-5, 15)
+    # nozzle shape
+    # ax.set_xlim(-15, 15)  # Fix x limits
+    # ax.set_ylim(-5, 15)   # Fix y limits
+    # dumbbell shape
+    ax.set_xlim(-5, 35)  # Fix x limits
+    ax.set_ylim(-5, 20)   # Fix y limits
+    
+    # Display path length
+    path_length = calculate_path_length(haptic_path)
+    ax.text(0, 15.5, f'Path Length: {path_length:.2f} mm', fontsize=12, color='black')
+    
+    # Display haptic path size
+    ax.text(0, 13.5, f'Haptic Path Size: {len(haptic_path)}', fontsize=12, color='black')
+    
+    # Display legend
     ax.legend()
 
 def calculate_path_length(haptic_path):
@@ -158,36 +182,55 @@ def calculate_path_length(haptic_path):
     return path_length
 
 if __name__ == "__main__":
-    width = 10
-    height = 15
-    concave_angle = 90
-    polygon_obj = PolygonObject("Concave", width, height, (0, 0), 360 - concave_angle)
+    # Define custom coordinates for a more complicated polygon
+    # Nozzle shape
+    # custom_coords = [
+    #     (0, 0), (5, -3), (14, 4), (4, 13), (1, 8), (-1, 12), (-4, 3), (-3, 0), (-2, -3), (1, -4)
+    # ]
+    
+    # Dumbbell shape
+    custom_coords = [
+        (0, 0), (11, 0), (11, 5), (23, 5), (23, 0), (34, 0), (34, 15), (23, 15), (23, 10), (11, 10), (11, 15), (0, 15)
+    ]
+        
+    
+    # Initialize the complicated polygon object with custom coordinates
+    polygon_obj = PolygonObject(shape="Custom", custom_coords=custom_coords)
+    
     xx, yy = polygon_obj.polygon.exterior.coords.xy
     
     step_size = 0.5
     
+    # Create figure and axis for the haptic path plot
     fig, ax = plt.subplots(figsize=(5, 4))
+    
+    # Set up the suction cup and animation
     haptic_paths = []
-    num_chambers_list = [3, 4, 6]
+    num_chambers = 4
+    label = f'{num_chambers} Chambers'
     
-    for num_chambers in num_chambers_list:
-        suction_cup_radius = 5
-        initial_yaw_angle = 0
-        suction_cup_center = [xx[4], yy[4]+1.5]
-        suction_cup = SuctionCup(num_chambers, suction_cup_radius, suction_cup_center, initial_yaw_angle)
-        
-        haptic_path = [suction_cup.center.tolist()]
-        
-        fig_anim, ax_anim = plt.subplots(figsize=(5, 4))
-        ani = FuncAnimation(fig_anim, animate_suction_cup, fargs=(ax_anim, polygon_obj, suction_cup, step_size, haptic_path), interval=10, repeat=False)
-        
-        ani.save(f'suction_cup_animation_{num_chambers}_chambers.gif', writer='pillow', fps=15)
-        
-        haptic_paths.append(haptic_path)
-        
-    plot_haptic_path(ax, haptic_paths)
+    suction_cup_radius = 5
+    initial_yaw_angle = 15
+    # suction_cup_center = [xx[4] - 2.5, yy[4] + 1] # nozzle shape
+    suction_cup_center = [17, 7.5] # dumbbell shape
+    suction_cup = SuctionCup(num_chambers, suction_cup_radius, suction_cup_center, initial_yaw_angle)
+    
+    haptic_path = [suction_cup.center.tolist()]
+    
+    fig_anim, ax_anim = plt.subplots(figsize=(5, 4))
+    ani = FuncAnimation(fig_anim, animate_suction_cup, fargs=(ax_anim, polygon_obj, suction_cup, step_size, haptic_path), interval=10, repeat=False)
+    
+    ani.save(f'suction_cup_animation_{num_chambers}_chambers.gif', writer='pillow', fps=15)
+    
+    haptic_paths.append(haptic_path)
+    
+    path_length = calculate_path_length(np.array(haptic_path))
+    print(f"Haptic path length for {num_chambers} chambers: {path_length:.2f} mm")
+    
+    # Plot the haptic path
+    plot_haptic_path(ax, polygon_obj, np.array(haptic_path), label)
+    
+    # Save the haptic path plot as a PNG file
+    fig.savefig(f"haptic_path_{num_chambers}.png", format='png', bbox_inches='tight')
+    
     plt.show()
-    
-    for num_chambers, haptic_path in zip(num_chambers_list, haptic_paths):
-        path_length = calculate_path_length(np.array(haptic_path))
-        print(f"Haptic path length for {num_chambers} chambers: {path_length:.2f} mm")
